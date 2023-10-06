@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { add, toggle } from "./redux/todoSlice"
 
@@ -6,6 +6,7 @@ function App() {
   let todo = useSelector((state) => state.todo)
   let [page, setPage] = useState(0)
   let [task, setTask] = useState("")
+  let [filteredTodo, setFilteredTodo] = useState(todo)
   let dispatch = useDispatch()
 
   const createTask = () => {
@@ -19,6 +20,20 @@ function App() {
   const toggleTask = (i) => {
     dispatch(toggle(i))
 }
+
+useEffect(()=>{
+  if(page===0)
+  {
+    setFilteredTodo(todo)
+  }
+  else if(page===1){
+    setFilteredTodo(todo.filter((e)=>!e.status))
+  }
+  else if(page===2){
+    setFilteredTodo(todo.filter((e)=>e.status))
+  }
+},[page,todo])
+
 
 return (
   <>
@@ -45,10 +60,10 @@ return (
         <div className="todo-items">
           <ul>
             {
-              todo
-                .map((e, i) => {
-                  return <li key={i} className={e.status ? "strikeout" : ""}>
-                    <input type='checkbox' checked={e.status} onChange={() => toggleTask(i)} /> &nbsp; {e.task}
+              filteredTodo
+                .map((e) => {
+                  return <li key={e.id} className={e.status ? "strikeout" : ""}>
+                    <input type='checkbox' checked={e.status} onChange={() => toggleTask(e.id)} /> &nbsp; {e.task}
                   </li>
                 })
             }

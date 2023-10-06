@@ -4,21 +4,29 @@ export const todoSlice = createSlice({
     name: "todo",
     initialState: [
         {
+            id:0,
             task: "Learn React Redux",
             status: true
         },
         {
+            id:1,
             task: "Implement React Redux",
             status: false
         }
     ],
     reducers: {
         add: (state, action) => {
-           console.log(action)
+          let id = state[state.length-1].id+1
+          action.payload.id=id
+          state.push(action.payload)
         },
         toggle: (state, action) => {
-            let i = action.payload
-            state[i].status = !state[i].status
+            let id = action.payload
+            state.forEach(e => {
+                if(e.id===id){
+                    e.status = !e.status
+                }
+            });
         }
     }
 })
