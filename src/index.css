@@ -1,3 +1,15 @@
+.bg-img {
+    background-image: url("../src/assets/bg/pexels-eberhard-grossgasteiger-1287142.jpg");
+    height: 45vh;
+    background-size: cover;
+    background-position: 0;
+    background-repeat: no-repeat;
+}
+
+.content {
+    padding-top: 2rem;
+}
+
 .heading {
     text-align: center;
 }
@@ -14,33 +26,40 @@
 .todo-tabs ul {
     display: flex;
     list-style: none;
+    justify-content: center;
+    margin: auto;
+    padding: 1.1em;
 }
 
-.todo-tabs ul li{
- padding: 10px;
- border: 1px solid black;
- cursor: pointer;
+.todo-tabs ul li {
+    padding: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.09em;
 }
 
-.todo-tabs ul li.active{
-    background-color: #4e73df;
-    color: white;
+.todo-tabs ul li.active {
+    color: #204fdd;
+}
+
+.todo-items ul li {
+    list-style: none;
 }
 
 .strikeout {
     text-decoration: line-through;
 }
 
-.create-todo{
+.create-todo {
     display: flex;
     justify-content: flex-start;
-    margin: 50px;
+    margin-top: 2.5em;
+    width: 100%;
 }
 
-.create-input{
-    margin-right: 50px;
-}
-
-.todo-items ul li{
-    list-style: none;
+.todo-items{
+    background-color: #F1EAFF;
+    padding: 1em 0;
+    border-radius: 25px;
+    min-height: 50vh
 }
