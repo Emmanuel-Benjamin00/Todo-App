@@ -4,10 +4,11 @@ import { add, toggle, start } from "./redux/todoSlice"
 import AxiosService from "./common/ApiService"
 
 function App() {
-  let todo = useSelector((state) => state.todo)
+  let todoData = useSelector((state) => state.todo)
+  let [todo, setTodo] = useState("")
   let [page, setPage] = useState(0)
   let [task, setTask] = useState("")
-  let [filteredTodo, setFilteredTodo] = useState(todo)
+  let [filteredTodo, setFilteredTodo] = useState(todoData)
   let dispatch = useDispatch()
 
   let getTodos = async () => {
@@ -22,16 +23,27 @@ function App() {
     }
   }
 
+  let postTodos = async () => {
+    try {
+      let res = await AxiosService.post("/todo/create",{
+        todo
+      })
+      if (res.status === 201) {
+        console.log(res)
+        // dispatch(add(payload))
+      }
+    } catch (error) {
+     console.log(error)
+    }
+  }
+
+
   useEffect(() => {
     getTodos()
   }, [])
 
   const createTask = () => {
-    const payload = {
-      task,
-      status: false
-    }
-    dispatch(add(payload))
+    postTodos()
   }
   
   const toggleTask = (i) => {
@@ -40,7 +52,7 @@ function App() {
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      setTask(" ")
+      setTodo(" ")
       createTask();
       event.target.blur()
     }
@@ -48,15 +60,15 @@ function App() {
 
   useEffect(() => {
     if (page === 0) {
-      setFilteredTodo(todo)
+      setFilteredTodo(todoData)
     }
     else if (page === 1) {
-      setFilteredTodo(todo.filter((e) => !e.status))
+      setFilteredTodo(todoData.filter((e) => !e.status))
     }
     else if (page === 2) {
-      setFilteredTodo(todo.filter((e) => e.status))
+      setFilteredTodo(todoData.filter((e) => e.status))
     }
-  }, [page, todo])
+  }, [page, todoData])
 
 
   return (
@@ -71,9 +83,9 @@ function App() {
                 autocomplete="off"
                 className='create-input form-control'
                 id="floatingInput"
-                value={task}
+                value={todo}
                 placeholder='Enter your TODO'
-                onChange={(e) => { setTask(e.target.value) }}
+                onChange={(e) => { setTodo(e.target.value) }}
                 onKeyDown={(e)=>handleKeyDown(e)}
               />
               <label htmlFor="floatingInput">Enter your Todo</label>
