@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { add, toggle } from "./redux/todoSlice"
+import { add, toggle, start } from "./redux/todoSlice"
+import AxiosService from "./common/ApiService"
 
 function App() {
   let todo = useSelector((state) => state.todo)
@@ -9,12 +10,32 @@ function App() {
   let [filteredTodo, setFilteredTodo] = useState(todo)
   let dispatch = useDispatch()
 
+  let getTodos = async () => {
+    try {
+      let res = await AxiosService.get("/todo/get")
+      if (res.status === 200) {
+        console.log(...res.data.todos)
+        dispatch(start(res.data.todos))
+      }
+    } catch (error) {
+     console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    getTodos()
+  }, [])
+
   const createTask = () => {
     const payload = {
       task,
       status: false
     }
     dispatch(add(payload))
+  }
+  
+  const toggleTask = (i) => {
+    dispatch(toggle(i))
   }
 
   const handleKeyDown = (e) => {
@@ -24,11 +45,6 @@ function App() {
       event.target.blur()
     }
   };
-
-
-  const toggleTask = (i) => {
-    dispatch(toggle(i))
-  }
 
   useEffect(() => {
     if (page === 0) {
@@ -83,7 +99,7 @@ function App() {
                   filteredTodo
                     .map((e) => {
                       return <li key={e.id} className={e.status ? "strikeout" : ""}>
-                        <input type='checkbox' checked={e.status} onChange={() => toggleTask(e.id)} /> &nbsp; {e.task}
+                        <input type='checkbox' checked={e.status} onChange={() => toggleTask(e.id)} /> &nbsp; {e.todo}
                       </li>
                     })
                 }

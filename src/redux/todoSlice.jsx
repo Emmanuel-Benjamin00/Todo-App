@@ -2,18 +2,7 @@ import { createSlice } from "@reduxjs/toolkit"
 
 export const todoSlice = createSlice({
     name: "todo",
-    initialState: [
-        {
-            id:0,
-            task: "Learn React Redux",
-            status: true
-        },
-        {
-            id:1,
-            task: "Implement React Redux",
-            status: false
-        }
-    ],
+    initialState: [],
     reducers: {
         add: (state, action) => {
           let id = state[state.length-1].id+1
@@ -27,9 +16,14 @@ export const todoSlice = createSlice({
                     e.status = !e.status
                 }
             });
+        },
+        start:(state, action) =>{
+            action.payload.forEach(e =>{
+                state.push(e)
+            })
         }
     }
 })
 
-export const { add, toggle } = todoSlice.actions
+export const { add, toggle, start } = todoSlice.actions
 export default todoSlice.reducer
