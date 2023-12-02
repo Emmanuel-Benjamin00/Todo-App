@@ -7,7 +7,6 @@ function App() {
   let todoData = useSelector((state) => state.todo)
   let [todo, setTodo] = useState("")
   let [page, setPage] = useState(0)
-  let [task, setTask] = useState("")
   let [filteredTodo, setFilteredTodo] = useState(todoData)
   let dispatch = useDispatch()
 
@@ -19,33 +18,30 @@ function App() {
         dispatch(start(res.data.todos))
       }
     } catch (error) {
-     console.log(error)
+      console.log(error)
     }
   }
 
   let postTodos = async () => {
     try {
-      let res = await AxiosService.post("/todo/create",{
+      let res = await AxiosService.post("/todo/create", {
         todo
       })
       if (res.status === 201) {
-        console.log(res)
-        // dispatch(add(payload))
+        try {
+          let res = await AxiosService.get("/todo/get")
+          const index = res.data.todos.length - 1
+          console.log(res.data.todos[index])
+          dispatch(add(res.data.todos[index]))
+        } catch (error) {
+          console.log(error)
+        }
       }
     } catch (error) {
-     console.log(error)
+      console.log(error)
     }
   }
 
-
-  useEffect(() => {
-    getTodos()
-  }, [todo])
-
-  const createTask = () => {
-    postTodos()
-  }
-  
   const toggleTask = (i) => {
     dispatch(toggle(i))
   }
@@ -53,10 +49,14 @@ function App() {
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       setTodo(" ")
-      createTask();
+      postTodos()
       event.target.blur()
     }
   };
+
+  useEffect(() => {
+    getTodos()
+  }, [])
 
   useEffect(() => {
     if (page === 0) {
@@ -69,7 +69,6 @@ function App() {
       setFilteredTodo(todoData.filter((e) => e.status))
     }
   }, [page, todoData])
-
 
   return (
     <>
@@ -86,7 +85,7 @@ function App() {
                 value={todo}
                 placeholder='Enter your TODO'
                 onChange={(e) => { setTodo(e.target.value) }}
-                onKeyDown={(e)=>handleKeyDown(e)}
+                onKeyDown={(e) => handleKeyDown(e)}
               />
               <label htmlFor="floatingInput">Enter your Todo</label>
             </div>
@@ -105,13 +104,13 @@ function App() {
             </div>
             <div className="todo-items">
               <ul>
-              
-            <h6>List of Todo..</h6>
+
+                <h6>List of Todo..</h6>
                 {
                   filteredTodo
                     .map((e) => {
-                      return <li key={e.id} className={e.status ? "strikeout" : ""}>
-                        <input type='checkbox' checked={e.status} onChange={() => toggleTask(e.id)} /> &nbsp; {e.todo}
+                      return <li key={e._id} className={e.status ? "strikeout" : ""}>
+                        <input type='checkbox' checked={e.status} onChange={() => toggleTask(e._id)} /> &nbsp; {e.todo}
                       </li>
                     })
                 }

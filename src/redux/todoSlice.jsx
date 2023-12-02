@@ -5,14 +5,12 @@ export const todoSlice = createSlice({
     initialState: [],
     reducers: {
         add: (state, action) => {
-          let id = state[state.length-1].id+1
-          action.payload.id=id
           state.push(action.payload)
         },
         toggle: (state, action) => {
             let id = action.payload
             state.forEach(e => {
-                if(e.id===id){
+                if(e._id===id){
                     e.status = !e.status
                 }
             });
