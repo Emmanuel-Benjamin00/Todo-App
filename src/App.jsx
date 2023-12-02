@@ -40,7 +40,7 @@ function App() {
 
   useEffect(() => {
     getTodos()
-  }, [])
+  }, [todo])
 
   const createTask = () => {
     postTodos()
