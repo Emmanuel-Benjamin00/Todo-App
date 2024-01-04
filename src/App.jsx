@@ -91,8 +91,9 @@ function App() {
                 placeholder='Enter your TODO'
                 onChange={(e) => { setTodo(e.target.value) }}
                 onKeyDown={(e) => handleKeyDown(e)}
+                disabled={loading || error}
               />
-              <label htmlFor="floatingInput">Enter your Todo</label>
+              <label htmlFor="floatingInput">{loading ? 'Please wait...' : (error ? 'Server error. Please check your network.' : 'Enter your TODO')}</label>
             </div>
             <div className="todo-tabs">
               <ul>
