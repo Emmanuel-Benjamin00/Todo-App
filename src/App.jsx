@@ -9,6 +9,8 @@ function App() {
   let [page, setPage] = useState(0)
   let [filteredTodo, setFilteredTodo] = useState(todoData)
   let dispatch = useDispatch()
+  let [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null);
 
   let getTodos = async () => {
     try {
@@ -19,6 +21,9 @@ function App() {
       }
     } catch (error) {
       console.log(error)
+      setError("Error fetching data. Please try again.");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -107,12 +112,27 @@ function App() {
 
                 <h6>List of Todo..</h6>
                 {
-                  filteredTodo
-                    .map((e) => {
-                      return <li key={e._id} className={e.status ? "strikeout" : ""}>
-                        <input type='checkbox' checked={e.status} onChange={() => toggleTask(e._id)} /> &nbsp; {e.todo}
-                      </li>
-                    })
+                  loading ?
+                    <>
+                      <div className='d-flex flex-column justify-content-center align-items-center text-black' style={{ width: "100%" }}>
+                        <div className="spinner-border text-black" role="status">
+                          <span className="visually-hidden">Loading...</span>
+                        </div>
+                        <p className="ms-2 mt-3">Loading...</p>
+                      </div>
+                    </>
+                    : error ? (
+                      <div className="alert alert-danger" role="alert" style={{ width: "80%" }}>
+                        {error}
+                      </div>
+                    ) :  (
+                        filteredTodo
+                          .map((e) => {
+                            return <li key={e._id} className={e.status ? "strikeout" : ""}>
+                              <input type='checkbox' checked={e.status} onChange={() => toggleTask(e._id)} /> &nbsp; {e.todo}
+                            </li>
+                          })
+                      )
                 }
               </ul>
             </div>
